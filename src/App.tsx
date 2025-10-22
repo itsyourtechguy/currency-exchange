@@ -9,28 +9,55 @@ import {
   TextField,
   Chip,
   Alert,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  CircularProgress,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Dayjs } from 'dayjs';
 import { today, minDate } from './utils/dateUtils';
 import { useCurrencyList } from './hooks/useCurrencyList';
+import { useHistoricalRates } from './hooks/useHistoricalRates';
 
 // Defaults
 const DEFAULT_BASE_CURRENCY = 'gbp';
-const DEFAULT_TARGET_CURRENCIES = ['usd', 'eur', 'jpy', 'chf', 'cad', 'aud', 'zar'];
+const DEFAULT_TARGET_CURRENCIES = [
+  'usd',
+  'eur',
+  'jpy',
+  'chf',
+  'cad',
+  'aud',
+  'zar',
+];
 
 function App() {
   const { currencies, loading: currenciesLoading } = useCurrencyList();
 
-  const [baseCurrency, setBaseCurrency] = useState<string>(DEFAULT_BASE_CURRENCY);
-  const [targetCurrencies, setTargetCurrencies] = useState<string[]>(DEFAULT_TARGET_CURRENCIES);
+  const [baseCurrency, setBaseCurrency] = useState<string>(
+    DEFAULT_BASE_CURRENCY
+  );
+  const [targetCurrencies, setTargetCurrencies] = useState<string[]>(
+    DEFAULT_TARGET_CURRENCIES
+  );
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(today);
+
+  const {
+    rateHistory,
+    loading: ratesLoading,
+    error: ratesError,
+  } = useHistoricalRates(baseCurrency, targetCurrencies, selectedDate);
 
   // Filter out base currency from target options
   const targetOptions = currencies.filter((code) => code !== baseCurrency);
 
   // Validate target count
-  const isTargetCountValid = targetCurrencies.length >= 3 && targetCurrencies.length <= 7;
+  const isTargetCountValid =
+    targetCurrencies.length >= 3 && targetCurrencies.length <= 7;
 
   return (
     <>
@@ -47,7 +74,14 @@ function App() {
 
         {/* Control Panel */}
         <Paper sx={{ p: 3, mb: 4 }}>
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3, mb: 2 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
+              gap: 3,
+              mb: 2,
+            }}
+          >
             <DatePicker
               label="End date"
               value={selectedDate}
@@ -72,7 +106,9 @@ function App() {
                   }
                 }
               }}
-              renderInput={(params) => <TextField {...params} label="Base Currency" />}
+              renderInput={(params) => (
+                <TextField {...params} label="Base Currency" />
+              )}
               sx={{ flex: 1 }}
               loading={currenciesLoading}
               isOptionEqualToValue={(option, value) => option === value}
@@ -106,7 +142,9 @@ function App() {
                 helperText={
                   !isTargetCountValid
                     ? 'Select between 3 and 7 currencies'
-                    : 'Add or remove currencies'
+                    : targetCurrencies.length < 7
+                      ? 'Add or remove currencies'
+                      : 'Maximum of 7 currencies selected'
                 }
                 error={!isTargetCountValid}
               />
@@ -123,12 +161,52 @@ function App() {
           )}
         </Paper>
 
-        {/* Placeholder for rate table */}
-        <Box sx={{ minHeight: 300, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Typography color="text.secondary">
-            Exchange rate table will appear here
+        {/* Rate Table */}
+        {ratesLoading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+            <CircularProgress />
+          </Box>
+        ) : ratesError ? (
+          <Alert severity="error" sx={{ my: 2 }}>
+            {ratesError}
+          </Alert>
+        ) : rateHistory.length > 0 ? (
+          <TableContainer sx={{ mt: 2 }}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Date</TableCell>
+                  {targetCurrencies.map((code) => (
+                    <TableCell key={code} align="right">
+                      {code.toUpperCase()}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rateHistory.map((row) => (
+                  <TableRow key={row.date.format('YYYY-MM-DD')}>
+                    <TableCell>{row.date.format('MMM D, YYYY')}</TableCell>
+                    {targetCurrencies.map((code) => (
+                      <TableCell key={code} align="right">
+                        {row.rates[code] !== null
+                          ? row.rates[code]?.toFixed(4)
+                          : '—'}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        ) : (
+          <Typography
+            color="text.secondary"
+            sx={{ textAlign: 'center', mt: 4 }}
+          >
+            Select a date and currencies to view exchange rates
           </Typography>
-        </Box>
+        )}
       </Container>
     </>
   );
