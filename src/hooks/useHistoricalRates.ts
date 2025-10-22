@@ -2,11 +2,7 @@ import { useState } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import { Dayjs } from 'dayjs';
 import { fetchRatesForDate } from '../api/rateApi';
-
-export type RateData = {
-  date: Dayjs;
-  rates: Record<string, number | null>;
-};
+import type { RateData } from '../types/rates';
 
 export function useHistoricalRates(
   baseCurrency: string,
