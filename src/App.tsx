@@ -1,6 +1,18 @@
-import { CssBaseline, Container, Box, Typography } from '@mui/material';
+import { useState } from 'react';
+import {
+  CssBaseline,
+  Container,
+  Box,
+  Typography,
+  Paper,
+} from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
+import { Dayjs } from 'dayjs';
+import { today, minDate } from './utils/dateUtils';
 
 function App() {
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(today);
+
   return (
     <>
       <CssBaseline />
@@ -14,9 +26,25 @@ function App() {
           </Typography>
         </Box>
 
-        {/* Main content */}
-        <Box sx={{ mt: 4, minHeight: 300, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Typography color="text.secondary">Select a date and currencies to begin</Typography>
+        {/* Control Panel */}
+        <Paper sx={{ p: 3, mb: 4 }}>
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
+            <DatePicker
+              label="Select end date"
+              value={selectedDate}
+              onChange={(newValue) => setSelectedDate(newValue)}
+              minDate={minDate}
+              maxDate={today}
+              sx={{ flex: 1 }}
+            />
+          </Box>
+        </Paper>
+
+        {/* Placeholder for future content */}
+        <Box sx={{ minHeight: 300, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Typography color="text.secondary">
+            Currency controls and rate table will appear here
+          </Typography>
         </Box>
       </Container>
     </>
