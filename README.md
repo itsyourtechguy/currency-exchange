@@ -1,20 +1,42 @@
-# Currency Exchange Rate Viewer
+## Currency Exchange Rate Viewer
 
-A React app to view historical exchange rates for a base currency against selected target currencies over the last 7 days.
+A React application that displays 7-day historical exchange rates for a selected base currency against user-chosen target currencies (3–7 allowed), with date selection up to 90 days in the past.
 
-## Features
-- Select a date (up to 90 days in the past)
+[**Live Demo**]
+(https://itsyourtechguy.github.io/currency-exchange/)
+
+## ✅ Features
+- View 7-day historical exchange rates
+- Select any date within the last 90 days
 - Choose a base currency (default: GBP)
-- Add/remove target currencies (3–7 allowed)
-- View 7-day exchange rate history in a table
+- Add/remove target currencies from 160+ supported options
+- Real-time validation (3–7 target currencies required)
+- Client-side caching for optimal performance
+- Responsive, accessible UI built with MUI
 
-## Tech Stack
-- React + TypeScript
-- Vite
-- MUI (Material UI)
-- ESLint + Prettier
+## 🛠 Tech Stack
+- **Framework**: React + TypeScript
+- **Bundler**: Vite
+- **Styling**: Material UI (MUI)
+- **State Management**: React Hooks (`useState`, `useEffect`, custom hooks)
+- **Testing**: Vitest, React Testing Library
+- **Linting**: ESLint + Prettier
+- **Deployment**: GitHub Pages
 
-## Setup
+## 🚀 Installation & Setup
+
 ```bash
+# Clone the repo
+git clone https://github.com/itsyourtechguy/currency-exchange.git
+
+# Install dependencies
 npm install
+
+# Start dev server
 npm run dev
+
+# Build for production
+npm run build
+
+# Run tests
+npm test
