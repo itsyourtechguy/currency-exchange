@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { CssBaseline, Container, Box, Typography } from '@mui/material';
+import { ThemeProvider, CssBaseline, Container, Box, Typography } from '@mui/material';
 import { Dayjs } from 'dayjs';
 import { today } from './utils/dateUtils';
 import { useCurrencyList } from './hooks/useCurrencyList';
 import { useHistoricalRates } from './hooks/useHistoricalRates';
 import { ControlsPanel } from './components/Controls/ControlsPanel';
 import { ExchangeRateTable } from './components/ExchangeRateTable/ExchangeRateTable';
+import { theme } from './theme';
 
 const DEFAULT_BASE_CURRENCY = 'gbp';
 const DEFAULT_TARGET_CURRENCIES = ['usd', 'eur', 'jpy', 'chf', 'cad', 'aud', 'zar'];
@@ -24,7 +25,7 @@ function App() {
   );
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Box sx={{ textAlign: 'center', mb: 4 }}>
@@ -54,7 +55,7 @@ function App() {
           error={ratesError}
         />
       </Container>
-    </>
+    </ThemeProvider>
   );
 }
 

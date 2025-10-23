@@ -1,10 +1,4 @@
-import {
-  Paper,
-  Box,
-  Alert,
-  TextField,
-  Chip,
-} from '@mui/material';
+import { Paper, Box, Alert, TextField, Chip } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Dayjs } from 'dayjs';
 import { Autocomplete } from '@mui/material';
@@ -32,11 +26,19 @@ export function ControlsPanel({
   currenciesLoading,
 }: ControlsPanelProps) {
   const targetOptions = allCurrencies.filter((code) => code !== baseCurrency);
-  const isTargetCountValid = targetCurrencies.length >= 3 && targetCurrencies.length <= 7;
+  const isTargetCountValid =
+    targetCurrencies.length >= 3 && targetCurrencies.length <= 7;
 
   return (
     <Paper sx={{ p: 3, mb: 4 }}>
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3, mb: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          gap: 3,
+          mb: 2,
+        }}
+      >
         <DatePicker
           label="End date"
           value={selectedDate}
@@ -55,11 +57,15 @@ export function ControlsPanel({
               onBaseCurrencyChange(newValue);
               // Auto-remove base from targets if present
               if (targetCurrencies.includes(newValue)) {
-                onTargetCurrenciesChange(targetCurrencies.filter((c) => c !== newValue));
+                onTargetCurrenciesChange(
+                  targetCurrencies.filter((c) => c !== newValue)
+                );
               }
             }
           }}
-          renderInput={(params) => <TextField {...params} label="Base Currency" />}
+          renderInput={(params) => (
+            <TextField {...params} label="Base Currency" />
+          )}
           sx={{ flex: 1 }}
           loading={currenciesLoading}
           isOptionEqualToValue={(option, value) => option === value}
@@ -75,7 +81,6 @@ export function ControlsPanel({
             onTargetCurrenciesChange(newValue);
           }
         }}
-
         renderTags={(value: string[], getTagProps) =>
           value.map((option, index) => (
             <Chip
@@ -93,7 +98,9 @@ export function ControlsPanel({
             helperText={
               !isTargetCountValid
                 ? 'Select between 3 and 7 currencies'
-                : 'Add or remove currencies'
+                : targetCurrencies.length < 7
+                  ? 'Add or remove currencies'
+                  : 'Maximum of 7 currencies selected'
             }
             error={!isTargetCountValid}
           />
