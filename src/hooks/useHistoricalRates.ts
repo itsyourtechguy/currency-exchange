@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
-import { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { fetchRatesForDate } from '../api/rateApi';
 import type { RateData } from '../types/rates';
 
 export function useHistoricalRates(
   baseCurrency: string,
   targetCurrencies: string[],
-  endDate: Dayjs | null
+  endDate: dayjs.Dayjs | null
 ) {
   const [rateHistory, setRateHistory] = useState<RateData[]>([]);
   const [loading, setLoading] = useState(false);
